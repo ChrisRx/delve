@@ -226,6 +226,12 @@ type gdbRegnames struct {
 // Detach.
 // Use Listen, Dial or Connect to complete connection.
 func newProcess(process *os.Process, attaching bool) *gdbProcess {
+	return newProcessFor(process, attaching, runtime.GOOS, runtime.GOARCH)
+}
+
+// newProcessFor is newProcess for a target of its own operating system and
+// architecture, such as a remote stub's.
+func newProcessFor(process *os.Process, attaching bool, goos, goarch string) *gdbProcess {
 	logger := logflags.GdbWireLogger()
 	p := &gdbProcess{
 		conn: gdbConn{
@@ -233,11 +239,11 @@ func newProcess(process *os.Process, attaching bool) *gdbProcess {
 			inbuf:               make([]byte, 0, initialInputBufferSize),
 			direction:           proc.Forward,
 			log:                 logger,
-			goarch:              runtime.GOARCH,
-			goos:                runtime.GOOS,
+			goarch:              goarch,
+			goos:                goos,
 		},
 		threads:        make(map[int]*gdbThread),
-		bi:             proc.NewBinaryInfo(runtime.GOOS, runtime.GOARCH, attaching),
+		bi:             proc.NewBinaryInfo(goos, goarch, attaching),
 		regnames:       new(gdbRegnames),
 		breakpoints:    proc.NewBreakpointMap(),
 		gcmdok:         true,
@@ -250,7 +256,7 @@ func newProcess(process *os.Process, attaching bool) *gdbProcess {
 		fallthrough
 	case "amd64":
 		p.breakpointKind = 1
-	case "arm64":
+	case "arm64", "mipsle":
 		p.breakpointKind = 4
 	}
 
@@ -265,6 +271,8 @@ func newProcess(process *os.Process, attaching bool) *gdbProcess {
 	case "amd64":
 		p.regnames.CX = "rcx"
 		p.regnames.FsBase = "fs_base"
+	case "mipsle":
+		p.regnames.CX = "r2"
 	default:
 		panic("not implemented")
 	}
@@ -359,7 +367,7 @@ func (p *gdbProcess) Connect(conn net.Conn, path, cmdline string, pid int, debug
 		return nil, err
 	}
 
-	if p.bi.Arch.Name != "arm64" {
+	if p.bi.Arch.Name == "amd64" {
 		// None of the stubs we support returns the value of fs_base or gs_base
 		// along with the registers, therefore we have to resort to executing a MOV
 		// instruction on the inferior to find out where the G struct of a given
@@ -1760,6 +1768,11 @@ func (t *gdbThread) reloadRegisters(regs map[uint64]uint64) error {
 		t.regs.gaddr = t.regs.byName("x28")
 		t.regs.hasgaddr = true
 		t.regs.tls = 0
+	} else if t.p.bi.Arch.Name == "mipsle" {
+		// No goroutine structure to find: TinyGo on a bare machine.
+		t.regs.gaddr = 0
+		t.regs.hasgaddr = false
+		t.regs.tls = 0
 	} else {
 		if t.p.loadGInstrAddr > 0 {
 			return t.reloadGAlloc()
@@ -2011,28 +2024,45 @@ func (t *gdbThread) SetCurrentBreakpoint(adjustPC bool) error {
 	return nil
 }
 
+// regValue reads a register's bytes, which are as wide as the register.
+func regValue(b []byte) uint64 {
+	if len(b) == 4 {
+		return uint64(binary.LittleEndian.Uint32(b))
+	}
+	return binary.LittleEndian.Uint64(b)
+}
+
+// setRegValue writes a register's bytes, as wide as the register.
+func setRegValue(b []byte, v uint64) {
+	if len(b) == 4 {
+		binary.LittleEndian.PutUint32(b, uint32(v))
+		return
+	}
+	binary.LittleEndian.PutUint64(b, v)
+}
+
 func (regs *gdbRegisters) PC() uint64 {
-	return binary.LittleEndian.Uint64(regs.regs[regs.regnames.PC].value)
+	return regValue(regs.regs[regs.regnames.PC].value)
 }
 
 func (regs *gdbRegisters) setPC(value uint64) {
-	binary.LittleEndian.PutUint64(regs.regs[regs.regnames.PC].value, value)
+	setRegValue(regs.regs[regs.regnames.PC].value, value)
 }
 
 func (regs *gdbRegisters) SP() uint64 {
-	return binary.LittleEndian.Uint64(regs.regs[regs.regnames.SP].value)
+	return regValue(regs.regs[regs.regnames.SP].value)
 }
 
 func (regs *gdbRegisters) BP() uint64 {
-	return binary.LittleEndian.Uint64(regs.regs[regs.regnames.BP].value)
+	return regValue(regs.regs[regs.regnames.BP].value)
 }
 
 func (regs *gdbRegisters) CX() uint64 {
-	return binary.LittleEndian.Uint64(regs.regs[regs.regnames.CX].value)
+	return regValue(regs.regs[regs.regnames.CX].value)
 }
 
 func (regs *gdbRegisters) setCX(value uint64) {
-	binary.LittleEndian.PutUint64(regs.regs[regs.regnames.CX].value, value)
+	setRegValue(regs.regs[regs.regnames.CX].value, value)
 }
 
 func (regs *gdbRegisters) TLS() uint64 {
@@ -2044,7 +2074,10 @@ func (regs *gdbRegisters) GAddr() (uint64, bool) {
 }
 
 func (regs *gdbRegisters) LR() uint64 {
-	return binary.LittleEndian.Uint64(regs.regs["lr"].value)
+	if r, ok := regs.regs["r31"]; ok && regs.arch.Name == "mipsle" {
+		return regValue(r.value)
+	}
+	return regValue(regs.regs["lr"].value)
 }
 
 func (regs *gdbRegisters) byName(name string) uint64 {
@@ -2052,7 +2085,7 @@ func (regs *gdbRegisters) byName(name string) uint64 {
 	if !ok {
 		return 0
 	}
-	return binary.LittleEndian.Uint64(reg.value)
+	return regValue(reg.value)
 }
 
 func (regs *gdbRegisters) FloatLoadError() error {
@@ -2257,4 +2290,12 @@ func checkRosettaExpensive() error {
 		return errors.New("can not run under Rosetta, check that the terminal/shell in use is right for your CPU architecture")
 	}
 	return nil
+}
+
+// DialRemote connects to a GDB remote stub already serving a program, such
+// as a console or emulator's, for the program path describes, built for
+// goos and goarch.
+func DialRemote(addr, path, goos, goarch string, debugInfoDirs []string) (*proc.TargetGroup, error) {
+	p := newProcessFor(nil, true, goos, goarch)
+	return p.Dial(addr, path, "", 0, debugInfoDirs, proc.StopAttached)
 }

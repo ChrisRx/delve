@@ -12,6 +12,7 @@ import (
 	"io"
 	"net"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -230,6 +231,13 @@ func (conn *gdbConn) disableAck() error {
 type gdbTarget struct {
 	Includes  []gdbTargetInclude `xml:"xi include"`
 	Registers []gdbRegisterInfo  `xml:"reg"`
+	Features  []gdbTargetFeature `xml:"feature"`
+}
+
+// gdbTargetFeature is a feature written in the target description itself,
+// as GDB's format allows, rather than included from a file of its own.
+type gdbTargetFeature struct {
+	Registers []gdbRegisterInfo `xml:"reg"`
 }
 
 type gdbTargetInclude struct {
@@ -263,6 +271,19 @@ func (conn *gdbConn) readTargetXml(regFound map[string]bool) (err error) {
 	conn.regsInfo, err = conn.readAnnex("target.xml")
 	if err != nil {
 		return err
+	}
+	// The g packet has the registers in the order of their numbers, which
+	// need not be the order the description lists them in. Registers
+	// without a number follow the one before them, so only a description
+	// that numbers them all is put in order.
+	numbered := len(conn.regsInfo) > 0
+	for i, r := range conn.regsInfo {
+		if r.Regnum == 0 && i > 0 {
+			numbered = false
+		}
+	}
+	if numbered {
+		sort.SliceStable(conn.regsInfo, func(i, j int) bool { return conn.regsInfo[i].Regnum < conn.regsInfo[j].Regnum })
 	}
 	var offset int
 	regnum := 0
@@ -365,6 +386,9 @@ func (conn *gdbConn) readAnnex(annex string) ([]gdbRegisterInfo, error) {
 	var tgt gdbTarget
 	if err := xml.Unmarshal(tgtbuf, &tgt); err != nil {
 		return nil, err
+	}
+	for _, f := range tgt.Features {
+		tgt.Registers = append(tgt.Registers, f.Registers...)
 	}
 
 	for _, incl := range tgt.Includes {
