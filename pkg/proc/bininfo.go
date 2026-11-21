@@ -45,6 +45,7 @@ import (
 
 const (
 	dwarfGoLanguage    = 22   // DW_LANG_Go (from DWARF v5, section 7.12, page 231)
+	dwarfC99Language   = 12   // DW_LANG_C99, which TinyGo writes for Go
 	dwarfAttrAddrBase  = 0x73 // debug/dwarf.AttrAddrBase in Go 1.14, defined here for compatibility with Go < 1.14
 	dwarfTreeCacheSize = 512  // size of the dwarfTree cache of each image
 )
@@ -156,6 +157,7 @@ var (
 		elf.EM_PPC64:     true,
 		elf.EM_RISCV:     true,
 		elf.EM_LOONGARCH: true,
+		elf.EM_MIPS:      true,
 	}
 
 	supportedWindowsArch = map[_PEMachine]bool{
@@ -943,6 +945,8 @@ func NewBinaryInfo(goos, goarch string, attaching bool) *BinaryInfo {
 		r.Arch = RISCV64Arch(goos)
 	case "loong64":
 		r.Arch = LOONG64Arch(goos)
+	case "mipsle":
+		r.Arch = MIPSArch(goos)
 	}
 	return r
 }
@@ -2126,6 +2130,9 @@ func (bi *BinaryInfo) setGStructOffsetElf(image *Image, exe *elf.File, wg *sync.
 	case elf.EM_PPC64, elf.EM_RISCV, elf.EM_LOONGARCH:
 		_ = getSymbol(image, bi.logger, exe, "runtime.tls_g")
 
+	case elf.EM_MIPS:
+		// No thread local storage: TinyGo on a bare machine has no threads.
+
 	default:
 		// we should never get here
 		panic("architecture not supported")
@@ -2939,6 +2946,26 @@ func (bi *BinaryInfo) registerTypeToPackageMap(entry *dwarf.Entry) {
 	bi.PackageMap[name] = []string{path}
 }
 
+// registerNameToPackageMap registers the package a qualified variable or
+// function name is in, for a compiler that does not name a unit's package,
+// such as TinyGo: main.frames is in package main, and
+// example.com/pkg.Name in example.com/pkg as pkg.
+func (bi *BinaryInfo) registerNameToPackageMap(qualified string) {
+	if complexType(qualified) || strings.ContainsAny(qualified, "()*[] ") {
+		return
+	}
+	slash := strings.LastIndex(qualified, "/")
+	dot := strings.Index(qualified[slash+1:], ".")
+	if dot <= 0 {
+		return
+	}
+	path := qualified[:slash+1+dot]
+	name := path[slash+1:]
+	if _, ok := bi.PackageMap[name]; !ok {
+		bi.PackageMap[name] = []string{path}
+	}
+}
+
 func (bi *BinaryInfo) loadDebugInfoMaps(image *Image, debugInfoBytes, debugLineBytes []byte, wg *sync.WaitGroup, cont func()) {
 	if wg != nil {
 		defer wg.Done()
@@ -2987,6 +3014,12 @@ func (bi *BinaryInfo) loadDebugInfoMaps(image *Image, debugInfoBytes, debugLineB
 				image.IsGo = true
 			}
 			cu.name, _ = entry.Val(dwarf.AttrName).(string)
+			// TinyGo writes its Go code's units as C99, named after a Go
+			// file or <unknown>.
+			if lang, _ := entry.Val(dwarf.AttrLanguage).(int64); lang == dwarfC99Language && (cu.name == "<unknown>" || strings.HasSuffix(cu.name, ".go")) {
+				cu.isgo = true
+				image.IsGo = true
+			}
 			compdir, _ := entry.Val(dwarf.AttrCompDir).(string)
 			if compdir != "" {
 				cu.name = filepath.Join(compdir, cu.name)
@@ -3172,6 +3205,8 @@ func (bi *BinaryInfo) loadDebugInfoMapsCompileUnit(ctxt *loadDebugInfoMapsContex
 				}
 				if !cu.isgo {
 					n = "C." + n
+				} else if !hasAttrGoPkgName {
+					bi.registerNameToPackageMap(n)
 				}
 				if _, known := ctxt.knownPackageVars[n]; !known {
 					bi.packageVars = append(bi.packageVars, packageVar{n, cu, entry.Offset, addr + image.StaticBase})
