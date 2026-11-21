@@ -1173,6 +1173,12 @@ func (stack *evalStack) executeOp() {
 				stack.err = nil
 				found = false
 			}
+			// A function has no fields: Name is a package, as main in
+			// main.x is, whose main.main may be inlined to nothing.
+			if found && stack.peek().Kind == reflect.Func {
+				stack.pop()
+				found = false
+			}
 			if found {
 				scope.evalStructSelector(&evalop.Select{Name: op.Sel}, stack)
 				if stack.err != nil {
