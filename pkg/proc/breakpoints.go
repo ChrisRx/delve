@@ -1105,11 +1105,18 @@ func (rbpi *returnBreakpointInfo) Collect(t *Target, thread Thread) []*Variable 
 		return nil
 	}
 
-	g, err := GetG(thread)
-	if err != nil {
-		return returnInfoError("could not get g", err, thread.BinInfo(), thread.ProcessMemory())
+	// Frame offsets are from the goroutine's stack top, or absolute where
+	// there is no goroutine, as ThreadStacktrace measures them: a runtime
+	// with none, such as TinyGo's on a bare machine, has the thread's scope.
+	var stackhi uint64
+	var scope *EvalScope
+	var err error
+	if g, _ := GetG(thread); g != nil {
+		stackhi = g.stack.hi
+		scope, err = GoroutineScope(t, thread)
+	} else {
+		scope, err = ThreadScope(t, thread)
 	}
-	scope, err := GoroutineScope(t, thread)
 	if err != nil {
 		return returnInfoError("could not get scope", err, thread.BinInfo(), thread.ProcessMemory())
 	}
@@ -1125,8 +1132,8 @@ func (rbpi *returnBreakpointInfo) Collect(t *Target, thread Thread) []*Variable 
 		return nil
 	}
 
-	oldFrameOffset := rbpi.frameOffset + int64(g.stack.hi)
-	oldSP := uint64(rbpi.spOffset + int64(g.stack.hi))
+	oldFrameOffset := rbpi.frameOffset + int64(stackhi)
+	oldSP := uint64(rbpi.spOffset + int64(stackhi))
 	err = fakeFunctionEntryScope(scope, rbpi.fn, oldFrameOffset, oldSP)
 	if err != nil {
 		return returnInfoError("could not read function entry", err, thread.BinInfo(), thread.ProcessMemory())
