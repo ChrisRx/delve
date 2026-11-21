@@ -452,6 +452,12 @@ func FindGoroutine(dbp *Target, gid int64) (*G, error) {
 		var err error
 		gs, nextg, err = GoroutinesInfo(dbp, nextg, goroutinesInfoLimit)
 		if err != nil {
+			// A runtime with no goroutine table, such as TinyGo's on a bare
+			// machine, runs no goroutine a debugger can tell apart: what
+			// is asked for is the current thread, which a nil G stands for.
+			if errors.Is(err, ErrNoRuntimeAllG) && dbp.SelectedGoroutine() == nil {
+				return nil, nil
+			}
 			return nil, err
 		}
 		for i := range gs {
