@@ -165,6 +165,13 @@ func parseCIE(ctx *parseContext) parsefunc {
 		}
 	}
 
+	// A .debug_frame CIE from version 4 on has the address size and the
+	// segment selector size next, as LLVM writes with DWARF 4.
+	if !ctx.parsingEHFrame() && ctx.common.Version >= 4 {
+		_, _ = buf.ReadByte() // address_size
+		_, _ = buf.ReadByte() // segment_selector_size
+	}
+
 	// parse code alignment factor
 	ctx.common.CodeAlignmentFactor, _ = leb128.DecodeUnsigned(buf)
 
