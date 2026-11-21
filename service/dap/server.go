@@ -1112,12 +1112,26 @@ func (s *Session) onLaunchRequest(request *dap.LaunchRequest) {
 		return
 	}
 
+	if strings.HasPrefix(s.config.Debugger.Backend, "gdbremote:") {
+		// A server started for a remote stub's program, as yaroze debug
+		// starts one, debugs that executable: nothing is built, and the
+		// program is the server's unless the client names it.
+		args.Mode = "exec"
+		if args.Program == "" && len(s.config.ProcessArgs) > 0 {
+			args.Program = s.config.ProcessArgs[0]
+		}
+	}
 	if args.Program == "" && args.Mode != "replay" { // Only fail on modes requiring a program
 		s.sendShowUserErrorResponse(request.Request, FailedToLaunch, "Failed to launch",
 			"The program attribute is missing in debug configuration.")
 		return
 	}
 
+	if (args.Backend == "" || args.Backend == "default") && strings.HasPrefix(s.config.Debugger.Backend, "gdbremote:") {
+		// A server started for one remote stub, as yaroze debug starts
+		// one, debugs that stub's program whatever the client asks.
+		args.Backend = s.config.Debugger.Backend
+	}
 	if args.Backend == "" {
 		args.Backend = "default"
 	}

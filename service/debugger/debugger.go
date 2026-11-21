@@ -179,6 +179,23 @@ func New(config *Config, processArgs []string) (*Debugger, error) {
 
 	// Create the process by either attaching or launching.
 	switch {
+	case strings.HasPrefix(d.config.Backend, "gdbremote:"):
+		// A GDB remote stub already serving the program, such as a
+		// console's or an emulator's: the architecture is the program's.
+		if len(d.processArgs) == 0 {
+			return nil, errors.New("gdbremote needs the program's executable")
+		}
+		addr := strings.TrimPrefix(d.config.Backend, "gdbremote:")
+		goarch, err := elfGoarch(d.processArgs[0])
+		if err != nil {
+			return nil, err
+		}
+		d.log.Infof("connecting to %s for %s (%s)", addr, d.processArgs[0], goarch)
+		d.target, err = gdbserial.DialRemote(addr, d.processArgs[0], "linux", goarch, d.config.DebugInfoDirectories)
+		if err != nil {
+			return nil, err
+		}
+
 	case d.config.AttachPid > 0 || d.config.AttachWaitFor != "":
 		d.log.Infof("attaching to pid %d", d.config.AttachPid)
 		path := ""
@@ -2868,4 +2885,23 @@ func (d *Debugger) TypeInfo(name string) (*api.TypeInfo, error) {
 	}
 
 	return r, nil
+}
+
+// elfGoarch is the GOARCH an ELF executable is for, for a remote stub's
+// program, which need not be the host's.
+func elfGoarch(path string) (string, error) {
+	f, err := elf.Open(path)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+	switch {
+	case f.Machine == elf.EM_MIPS && f.Class == elf.ELFCLASS32 && f.Data == elf.ELFDATA2LSB:
+		return "mipsle", nil
+	case f.Machine == elf.EM_X86_64:
+		return "amd64", nil
+	case f.Machine == elf.EM_AARCH64:
+		return "arm64", nil
+	}
+	return "", fmt.Errorf("%s: no remote support for %v", path, f.Machine)
 }
