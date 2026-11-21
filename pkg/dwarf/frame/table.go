@@ -375,13 +375,19 @@ func defcfa(frame *FrameContext) {
 	frame.CFA.Offset = int64(offset)
 }
 
+// After DW_CFA_def_cfa_register or DW_CFA_def_cfa_offset the CFA is a
+// register plus an offset, even where no rule came before: LLVM's MIPS CIE
+// sets its CFA with DW_CFA_def_cfa_register alone, the offset taken as 0.
+
 func defcfaregister(frame *FrameContext) {
 	reg, _ := leb128.DecodeUnsigned(frame.buf)
+	frame.CFA.Rule = RuleCFA
 	frame.CFA.Reg = reg
 }
 
 func defcfaoffset(frame *FrameContext) {
 	offset, _ := leb128.DecodeUnsigned(frame.buf)
+	frame.CFA.Rule = RuleCFA
 	frame.CFA.Offset = int64(offset)
 }
 
