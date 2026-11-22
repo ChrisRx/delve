@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-delve/delve/pkg/config"
-	"github.com/go-delve/delve/pkg/logflags"
+	"github.com/ChrisRx/delve/pkg/config"
+	"github.com/ChrisRx/delve/pkg/logflags"
 )
 
 // Remove the file at path and its adjacent Darwin dSYM bundle, if present,

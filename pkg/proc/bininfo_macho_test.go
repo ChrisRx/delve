@@ -10,8 +10,8 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/go-delve/delve/pkg/goversion"
-	protest "github.com/go-delve/delve/pkg/proc/test"
+	"github.com/ChrisRx/delve/pkg/goversion"
+	protest "github.com/ChrisRx/delve/pkg/proc/test"
 )
 
 func TestLoadingSplitDwarfMacho(t *testing.T) {

@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/go-delve/delve/pkg/dwarf/op"
-	"github.com/go-delve/delve/pkg/dwarf/regnum"
-	"github.com/go-delve/delve/pkg/proc"
+	"github.com/ChrisRx/delve/pkg/dwarf/op"
+	"github.com/ChrisRx/delve/pkg/dwarf/regnum"
+	"github.com/ChrisRx/delve/pkg/proc"
 )
 
 const (

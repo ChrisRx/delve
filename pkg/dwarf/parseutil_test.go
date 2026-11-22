@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/go-delve/delve/pkg/dwarf"
+	"github.com/ChrisRx/delve/pkg/dwarf"
 )
 
 func TestReadUnitVersionsTruncatedInput(t *testing.T) {

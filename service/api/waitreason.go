@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 
-	"github.com/go-delve/delve/pkg/goversion"
+	"github.com/ChrisRx/delve/pkg/goversion"
 )
 
 var waitReasonStrings1dot18 = []string{

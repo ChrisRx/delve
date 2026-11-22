@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/go-delve/delve/pkg/elfwriter"
-	"github.com/go-delve/delve/pkg/proc"
+	"github.com/ChrisRx/delve/pkg/elfwriter"
+	"github.com/ChrisRx/delve/pkg/proc"
 )
 
 func (p *nativeProcess) MemoryMap() ([]proc.MemoryMapEntry, error) {

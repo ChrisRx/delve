@@ -11,9 +11,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/go-delve/delve/pkg/astutil"
-	"github.com/go-delve/delve/pkg/dwarf/godwarf"
-	"github.com/go-delve/delve/pkg/dwarf/reader"
+	"github.com/ChrisRx/delve/pkg/astutil"
+	"github.com/ChrisRx/delve/pkg/dwarf/godwarf"
+	"github.com/ChrisRx/delve/pkg/dwarf/reader"
 )
 
 var (

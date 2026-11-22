@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"maps"
 
-	"github.com/go-delve/delve/pkg/dwarf/leb128"
+	"github.com/ChrisRx/delve/pkg/dwarf/leb128"
 )
 
 // DWRule wrapper of rule defined for register values.

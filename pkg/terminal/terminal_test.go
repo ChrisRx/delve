@@ -5,8 +5,8 @@ import (
 	"net/rpc"
 	"testing"
 
-	"github.com/go-delve/delve/service"
-	"github.com/go-delve/delve/service/api"
+	"github.com/ChrisRx/delve/service"
+	"github.com/ChrisRx/delve/service/api"
 	"github.com/go-delve/liner"
 )
 

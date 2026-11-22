@@ -7,8 +7,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/go-delve/delve/pkg/config"
-	"github.com/go-delve/delve/pkg/terminal"
+	"github.com/ChrisRx/delve/pkg/config"
+	"github.com/ChrisRx/delve/pkg/terminal"
 )
 
 func main() {

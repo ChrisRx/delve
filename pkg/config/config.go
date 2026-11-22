@@ -10,7 +10,7 @@ import (
 	"runtime"
 	"slices"
 
-	"github.com/go-delve/delve/service/api"
+	"github.com/ChrisRx/delve/service/api"
 	"go.yaml.in/yaml/v3"
 )
 

@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	protest "github.com/go-delve/delve/pkg/proc/test"
-	"github.com/go-delve/delve/service/rpc2"
+	protest "github.com/ChrisRx/delve/pkg/proc/test"
+	"github.com/ChrisRx/delve/service/rpc2"
 )
 
 func scanForListenAddr(t *testing.T, scanner *bufio.Scanner, stderr *bytes.Buffer) string {

@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/go-delve/delve/pkg/proc/amd64util"
-	"github.com/go-delve/delve/pkg/proc/native/cpuid"
+	"github.com/ChrisRx/delve/pkg/proc/amd64util"
+	"github.com/ChrisRx/delve/pkg/proc/native/cpuid"
 )
 
 var (

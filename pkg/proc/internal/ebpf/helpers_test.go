@@ -7,9 +7,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/go-delve/delve/pkg/dwarf/godwarf"
-	"github.com/go-delve/delve/pkg/dwarf/op"
-	"github.com/go-delve/delve/pkg/proc/internal/ebpf/testhelper"
+	"github.com/ChrisRx/delve/pkg/dwarf/godwarf"
+	"github.com/ChrisRx/delve/pkg/dwarf/op"
+	"github.com/ChrisRx/delve/pkg/proc/internal/ebpf/testhelper"
 )
 
 func compareStructTypes(t *testing.T, gostructVal, cstructVal any) {

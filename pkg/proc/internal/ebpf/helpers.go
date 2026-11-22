@@ -14,9 +14,9 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/go-delve/delve/pkg/dwarf/godwarf"
-	"github.com/go-delve/delve/pkg/dwarf/op"
-	"github.com/go-delve/delve/pkg/logflags"
+	"github.com/ChrisRx/delve/pkg/dwarf/godwarf"
+	"github.com/ChrisRx/delve/pkg/dwarf/op"
+	"github.com/ChrisRx/delve/pkg/logflags"
 
 	"github.com/cilium/ebpf"
 	"github.com/cilium/ebpf/link"

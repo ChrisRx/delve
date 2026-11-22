@@ -20,17 +20,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-delve/delve/pkg/dwarf/godwarf"
-	"github.com/go-delve/delve/pkg/dwarf/op"
-	"github.com/go-delve/delve/pkg/gobuild"
-	"github.com/go-delve/delve/pkg/goversion"
-	"github.com/go-delve/delve/pkg/locspec"
-	"github.com/go-delve/delve/pkg/logflags"
-	"github.com/go-delve/delve/pkg/proc"
-	"github.com/go-delve/delve/pkg/proc/core"
-	"github.com/go-delve/delve/pkg/proc/gdbserial"
-	"github.com/go-delve/delve/pkg/proc/native"
-	"github.com/go-delve/delve/service/api"
+	"github.com/ChrisRx/delve/pkg/dwarf/godwarf"
+	"github.com/ChrisRx/delve/pkg/dwarf/op"
+	"github.com/ChrisRx/delve/pkg/gobuild"
+	"github.com/ChrisRx/delve/pkg/goversion"
+	"github.com/ChrisRx/delve/pkg/locspec"
+	"github.com/ChrisRx/delve/pkg/logflags"
+	"github.com/ChrisRx/delve/pkg/proc"
+	"github.com/ChrisRx/delve/pkg/proc/core"
+	"github.com/ChrisRx/delve/pkg/proc/gdbserial"
+	"github.com/ChrisRx/delve/pkg/proc/native"
+	"github.com/ChrisRx/delve/service/api"
 )
 
 var (

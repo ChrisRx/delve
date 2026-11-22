@@ -18,14 +18,14 @@ import (
 	"github.com/derekparker/trie/v3"
 	"github.com/go-delve/liner"
 
-	"github.com/go-delve/delve/pkg/config"
-	"github.com/go-delve/delve/pkg/goversion"
-	"github.com/go-delve/delve/pkg/locspec"
-	"github.com/go-delve/delve/pkg/proc"
-	"github.com/go-delve/delve/pkg/terminal/colorize"
-	"github.com/go-delve/delve/pkg/terminal/starbind"
-	"github.com/go-delve/delve/service"
-	"github.com/go-delve/delve/service/api"
+	"github.com/ChrisRx/delve/pkg/config"
+	"github.com/ChrisRx/delve/pkg/goversion"
+	"github.com/ChrisRx/delve/pkg/locspec"
+	"github.com/ChrisRx/delve/pkg/proc"
+	"github.com/ChrisRx/delve/pkg/terminal/colorize"
+	"github.com/ChrisRx/delve/pkg/terminal/starbind"
+	"github.com/ChrisRx/delve/service"
+	"github.com/ChrisRx/delve/service/api"
 )
 
 const (

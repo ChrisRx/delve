@@ -7,7 +7,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/go-delve/delve/pkg/proc"
+	"github.com/ChrisRx/delve/pkg/proc"
 )
 
 // Process represents all of the information the debugger

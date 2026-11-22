@@ -15,14 +15,14 @@ import (
 	"runtime"
 	"sync"
 
-	"github.com/go-delve/delve/pkg/logflags"
-	"github.com/go-delve/delve/pkg/version"
-	"github.com/go-delve/delve/service"
-	"github.com/go-delve/delve/service/api"
-	"github.com/go-delve/delve/service/dap"
-	"github.com/go-delve/delve/service/debugger"
-	"github.com/go-delve/delve/service/internal/sameuser"
-	"github.com/go-delve/delve/service/rpc2"
+	"github.com/ChrisRx/delve/pkg/logflags"
+	"github.com/ChrisRx/delve/pkg/version"
+	"github.com/ChrisRx/delve/service"
+	"github.com/ChrisRx/delve/service/api"
+	"github.com/ChrisRx/delve/service/dap"
+	"github.com/ChrisRx/delve/service/debugger"
+	"github.com/ChrisRx/delve/service/internal/sameuser"
+	"github.com/ChrisRx/delve/service/rpc2"
 )
 
 //go:generate go run github.com/go-delve/build-tools/cmd/gen-suitablemethods@latest suitablemethods

@@ -10,7 +10,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/go-delve/delve/pkg/proc"
+	"github.com/ChrisRx/delve/pkg/proc"
 )
 
 // ErrNotExecutable is an error returned when trying

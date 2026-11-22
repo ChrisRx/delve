@@ -3,9 +3,9 @@ package linutil
 import (
 	"fmt"
 
-	"github.com/go-delve/delve/pkg/dwarf/op"
-	"github.com/go-delve/delve/pkg/dwarf/regnum"
-	"github.com/go-delve/delve/pkg/proc"
+	"github.com/ChrisRx/delve/pkg/dwarf/op"
+	"github.com/ChrisRx/delve/pkg/dwarf/regnum"
+	"github.com/ChrisRx/delve/pkg/proc"
 )
 
 // PPC64LERegisters implements the proc.Registers interface for the native/linux

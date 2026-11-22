@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
-	"github.com/go-delve/delve/cmd/dlv/cmds"
-	"github.com/go-delve/delve/pkg/logflags"
-	"github.com/go-delve/delve/pkg/version"
+	"github.com/ChrisRx/delve/cmd/dlv/cmds"
+	"github.com/ChrisRx/delve/pkg/logflags"
+	"github.com/ChrisRx/delve/pkg/version"
 	"golang.org/x/telemetry"
 )
 

@@ -17,9 +17,9 @@ import (
 
 	sys "golang.org/x/sys/unix"
 
-	"github.com/go-delve/delve/pkg/proc"
-	"github.com/go-delve/delve/pkg/proc/internal/ebpf"
-	"github.com/go-delve/delve/pkg/proc/macutil"
+	"github.com/ChrisRx/delve/pkg/proc"
+	"github.com/ChrisRx/delve/pkg/proc/internal/ebpf"
+	"github.com/ChrisRx/delve/pkg/proc/macutil"
 )
 
 // osProcessDetails holds Darwin specific information.

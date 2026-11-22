@@ -9,11 +9,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/go-delve/delve/pkg/gobuild"
-	"github.com/go-delve/delve/pkg/logflags"
-	"github.com/go-delve/delve/pkg/proc"
-	protest "github.com/go-delve/delve/pkg/proc/test"
-	"github.com/go-delve/delve/service/api"
+	"github.com/ChrisRx/delve/pkg/gobuild"
+	"github.com/ChrisRx/delve/pkg/logflags"
+	"github.com/ChrisRx/delve/pkg/proc"
+	protest "github.com/ChrisRx/delve/pkg/proc/test"
+	"github.com/ChrisRx/delve/service/api"
 )
 
 func TestMain(m *testing.M) {

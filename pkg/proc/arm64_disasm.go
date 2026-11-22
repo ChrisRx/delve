@@ -3,8 +3,8 @@ package proc
 import (
 	"encoding/binary"
 
-	"github.com/go-delve/delve/pkg/dwarf/op"
-	"github.com/go-delve/delve/pkg/dwarf/regnum"
+	"github.com/ChrisRx/delve/pkg/dwarf/op"
+	"github.com/ChrisRx/delve/pkg/dwarf/regnum"
 
 	"golang.org/x/arch/arm64/arm64asm"
 )

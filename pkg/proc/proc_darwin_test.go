@@ -3,8 +3,8 @@ package proc_test
 import (
 	"testing"
 
-	"github.com/go-delve/delve/pkg/proc"
-	protest "github.com/go-delve/delve/pkg/proc/test"
+	"github.com/ChrisRx/delve/pkg/proc"
+	protest "github.com/ChrisRx/delve/pkg/proc/test"
 )
 
 func TestStacktraceExtlinkMac(t *testing.T) {

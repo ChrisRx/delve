@@ -1,8 +1,8 @@
 package proc
 
 import (
-	"github.com/go-delve/delve/pkg/dwarf/op"
-	"github.com/go-delve/delve/pkg/dwarf/regnum"
+	"github.com/ChrisRx/delve/pkg/dwarf/op"
+	"github.com/ChrisRx/delve/pkg/dwarf/regnum"
 	"golang.org/x/arch/loong64/loong64asm"
 )
 

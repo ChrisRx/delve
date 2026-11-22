@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/go-delve/delve/pkg/dwarf/frame"
-	"github.com/go-delve/delve/pkg/dwarf/op"
-	"github.com/go-delve/delve/pkg/dwarf/regnum"
+	"github.com/ChrisRx/delve/pkg/dwarf/frame"
+	"github.com/ChrisRx/delve/pkg/dwarf/op"
+	"github.com/ChrisRx/delve/pkg/dwarf/regnum"
 )
 
 var i386BreakInstruction = []byte{0xCC}

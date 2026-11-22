@@ -20,13 +20,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-delve/delve/pkg/config"
-	"github.com/go-delve/delve/pkg/goversion"
-	protest "github.com/go-delve/delve/pkg/proc/test"
-	"github.com/go-delve/delve/pkg/terminal"
-	"github.com/go-delve/delve/service/dap"
-	"github.com/go-delve/delve/service/dap/daptest"
-	"github.com/go-delve/delve/service/rpc2"
+	"github.com/ChrisRx/delve/pkg/config"
+	"github.com/ChrisRx/delve/pkg/goversion"
+	protest "github.com/ChrisRx/delve/pkg/proc/test"
+	"github.com/ChrisRx/delve/pkg/terminal"
+	"github.com/ChrisRx/delve/service/dap"
+	"github.com/ChrisRx/delve/service/dap/daptest"
+	"github.com/ChrisRx/delve/service/rpc2"
 	godap "github.com/google/go-dap"
 )
 
@@ -1821,7 +1821,7 @@ func TestVersion(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error executing `dlv version`: %v\n%s\n", err, got)
 	}
-	want1 := []byte("mod\tgithub.com/go-delve/delve")
+	want1 := []byte("mod\tgithub.com/ChrisRx/delve")
 	want2 := []byte("dep\tgithub.com/google/go-dap")
 	if !bytes.Contains(got, want1) || !bytes.Contains(got, want2) {
 		t.Errorf("got %s\nwant %s and %s in the output", got, want1, want2)
@@ -1838,7 +1838,7 @@ func TestStaticcheck(t *testing.T) {
 		t.Skip("staticcheck not installed")
 	}
 	// default checks minus SA1019 which complains about deprecated identifiers, which change between versions of Go.
-	args := []string{"-tests=false", "-checks=all,-SA1019,-ST1000,-ST1003,-ST1016,-S1021,-ST1023", "github.com/go-delve/delve/..."}
+	args := []string{"-tests=false", "-checks=all,-SA1019,-ST1000,-ST1003,-ST1016,-S1021,-ST1023", "github.com/ChrisRx/delve/..."}
 	// * SA1019 is disabled because new deprecations get added on every version
 	//   of Go making the output of staticcheck inconsistent depending on the
 	//   version of Go used to run it.

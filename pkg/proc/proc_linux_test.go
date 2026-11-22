@@ -13,9 +13,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-delve/delve/pkg/proc"
-	"github.com/go-delve/delve/pkg/proc/native"
-	protest "github.com/go-delve/delve/pkg/proc/test"
+	"github.com/ChrisRx/delve/pkg/proc"
+	"github.com/ChrisRx/delve/pkg/proc/native"
+	protest "github.com/ChrisRx/delve/pkg/proc/test"
 )
 
 func mustHaveObjcopy(t *testing.T) {

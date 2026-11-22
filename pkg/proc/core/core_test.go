@@ -16,9 +16,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/go-delve/delve/pkg/goversion"
-	"github.com/go-delve/delve/pkg/proc"
-	"github.com/go-delve/delve/pkg/proc/test"
+	"github.com/ChrisRx/delve/pkg/goversion"
+	"github.com/ChrisRx/delve/pkg/proc"
+	"github.com/ChrisRx/delve/pkg/proc/test"
 	"golang.org/x/text/encoding/unicode"
 )
 

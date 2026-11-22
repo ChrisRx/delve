@@ -29,14 +29,14 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/go-delve/delve/pkg/goversion"
-	"github.com/go-delve/delve/pkg/logflags"
-	"github.com/go-delve/delve/pkg/proc"
-	protest "github.com/go-delve/delve/pkg/proc/test"
-	"github.com/go-delve/delve/service"
-	"github.com/go-delve/delve/service/api"
-	"github.com/go-delve/delve/service/dap/daptest"
-	"github.com/go-delve/delve/service/debugger"
+	"github.com/ChrisRx/delve/pkg/goversion"
+	"github.com/ChrisRx/delve/pkg/logflags"
+	"github.com/ChrisRx/delve/pkg/proc"
+	protest "github.com/ChrisRx/delve/pkg/proc/test"
+	"github.com/ChrisRx/delve/service"
+	"github.com/ChrisRx/delve/service/api"
+	"github.com/ChrisRx/delve/service/dap/daptest"
+	"github.com/ChrisRx/delve/service/debugger"
 	"github.com/google/go-dap"
 )
 
@@ -630,7 +630,7 @@ func TestAttachStopOnEntry(t *testing.T) {
 			t.Errorf("\ngot %#v\nwant RequestSeq=12", cResp)
 		}
 
-		// TODO(polina): once https://github.com/go-delve/delve/issues/2259 is
+		// TODO(polina): once https://github.com/ChrisRx/delve/issues/2259 is
 		// fixed, test with kill=false.
 
 		// 13 >> disconnect, << disconnect
@@ -2855,19 +2855,19 @@ func TestGlobalScopeAndVariables(t *testing.T) {
 					client.ScopesRequest(1000)
 					scopes = client.ExpectScopesResponse(t)
 					checkScope(t, scopes, 0, "Locals", localsScope)
-					checkScope(t, scopes, 1, "Globals (package github.com/go-delve/delve/_fixtures/internal/dir0/pkg)", globalsScope)
+					checkScope(t, scopes, 1, "Globals (package github.com/ChrisRx/delve/_fixtures/internal/dir0/pkg)", globalsScope)
 
 					client.VariablesRequest(globalsScope)
 					globals := client.ExpectVariablesResponse(t)
 					checkChildren(t, globals, "Globals", 1)
-					ref := checkVarExact(t, globals, 0, "SomeVar", "github.com/go-delve/delve/_fixtures/internal/dir0/pkg.SomeVar", "pkg.SomeType {X: 0}", "github.com/go-delve/delve/_fixtures/internal/dir0/pkg.SomeType", hasChildren)
+					ref := checkVarExact(t, globals, 0, "SomeVar", "github.com/ChrisRx/delve/_fixtures/internal/dir0/pkg.SomeVar", "pkg.SomeType {X: 0}", "github.com/ChrisRx/delve/_fixtures/internal/dir0/pkg.SomeType", hasChildren)
 
 					if ref > 0 {
 						client.VariablesRequest(ref)
 						somevar := client.ExpectVariablesResponse(t)
 						checkChildren(t, somevar, "SomeVar", 1)
 						// TODO(polina): unlike main.p, this prefix won't work
-						checkVarExact(t, somevar, 0, "X", "github.com/go-delve/delve/_fixtures/internal/dir0/pkg.SomeVar.X", "0", "float64", noChildren)
+						checkVarExact(t, somevar, 0, "X", "github.com/ChrisRx/delve/_fixtures/internal/dir0/pkg.SomeVar.X", "0", "float64", noChildren)
 					}
 				},
 				disconnect: false,
@@ -4420,7 +4420,7 @@ showRawStrings	%v
 	return fmt.Sprintf(formatStr, depth, maxStringLen, maxArrayValues, showGlobals, showRegisters, goroutineFilters, showPprofLabels, hideSystemGoroutines, substitutePath, followExec, followExecRegex, showRawStrings)
 }
 
-// TestEvaluateEscapeStrings reproduces https://github.com/go-delve/delve/issues/4245.
+// TestEvaluateEscapeStrings reproduces https://github.com/ChrisRx/delve/issues/4245.
 // Tests both the default behavior (showRawStrings=false) where strings are
 // displayed with Go's %q (quoted and escaped), and the expanded behavior
 // (showRawStrings=true) where strings are printed as-is with %s.

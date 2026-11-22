@@ -79,13 +79,13 @@ import (
 
 	isatty "github.com/mattn/go-isatty"
 
-	"github.com/go-delve/delve/pkg/dwarf/op"
-	"github.com/go-delve/delve/pkg/elfwriter"
-	"github.com/go-delve/delve/pkg/logflags"
-	"github.com/go-delve/delve/pkg/proc"
-	"github.com/go-delve/delve/pkg/proc/internal/ebpf"
-	"github.com/go-delve/delve/pkg/proc/linutil"
-	"github.com/go-delve/delve/pkg/proc/macutil"
+	"github.com/ChrisRx/delve/pkg/dwarf/op"
+	"github.com/ChrisRx/delve/pkg/elfwriter"
+	"github.com/ChrisRx/delve/pkg/logflags"
+	"github.com/ChrisRx/delve/pkg/proc"
+	"github.com/ChrisRx/delve/pkg/proc/internal/ebpf"
+	"github.com/ChrisRx/delve/pkg/proc/linutil"
+	"github.com/ChrisRx/delve/pkg/proc/macutil"
 )
 
 const (
@@ -353,7 +353,7 @@ func (p *gdbProcess) Connect(conn net.Conn, path, cmdline string, pid int, debug
 		// on arm64 it results in E74 being returned (https://bugs.llvm.org/show_bug.cgi?id=50169)
 		// and on systems where AVX-512 is used it returns the floating point
 		// registers scrambled and sometimes causes the mask registers to be
-		// zeroed out (https://github.com/go-delve/delve/pull/2498).
+		// zeroed out (https://github.com/ChrisRx/delve/pull/2498).
 		// All of these bugs stem from the fact that the main consumer of
 		// debugserver, lldb, never uses 'g' or 'G' which would make Delve the
 		// sole tester of those codepaths.

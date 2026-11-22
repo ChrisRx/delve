@@ -17,7 +17,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/go-delve/delve/pkg/dwarf/op"
+	"github.com/ChrisRx/delve/pkg/dwarf/op"
 )
 
 const (

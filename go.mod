@@ -1,4 +1,4 @@
-module github.com/go-delve/delve
+module github.com/ChrisRx/delve
 
 go 1.25.0
 

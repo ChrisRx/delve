@@ -3,7 +3,7 @@ package main
 import (
 	"runtime"
 
-	"github.com/go-delve/delve/_fixtures/linkertrampoline/callee"
+	"github.com/ChrisRx/delve/_fixtures/linkertrampoline/callee"
 )
 
 func main() {

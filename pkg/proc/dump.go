@@ -9,8 +9,8 @@ import (
 	"runtime"
 	"sync"
 
-	"github.com/go-delve/delve/pkg/elfwriter"
-	"github.com/go-delve/delve/pkg/version"
+	"github.com/ChrisRx/delve/pkg/elfwriter"
+	"github.com/ChrisRx/delve/pkg/version"
 )
 
 var (
