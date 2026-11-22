@@ -2238,6 +2238,11 @@ func (s *Session) onThreadsRequest(request *dap.ThreadsRequest) {
 			// If the program exits very quickly, the initial threads request will complete after it has exited.
 			// A TerminatedEvent has already been sent. Ignore the error returned in this case.
 			s.config.log.Debug(errProcessExited)
+		case errors.Is(err, proc.ErrNoRuntimeAllG):
+			// A runtime with no goroutine table, such as TinyGo's on a bare
+			// machine, has only the current thread, which the dummy thread
+			// stands for: requests on it go to the current thread.
+			s.config.log.Debug(err)
 		default:
 			s.send(&dap.OutputEvent{
 				Event: *s.newEvent("output"),
