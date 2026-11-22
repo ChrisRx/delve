@@ -2241,8 +2241,10 @@ func (s *Session) onThreadsRequest(request *dap.ThreadsRequest) {
 		case errors.Is(err, proc.ErrNoRuntimeAllG):
 			// A runtime with no goroutine table, such as TinyGo's on a bare
 			// machine, has only the current thread, which the dummy thread
-			// stands for: requests on it go to the current thread.
+			// stands for: requests on it go to the current thread. It is the
+			// program's one thread, named for it.
 			s.config.log.Debug(err)
+			threads = []dap.Thread{{Id: 1, Name: "main"}}
 		default:
 			s.send(&dap.OutputEvent{
 				Event: *s.newEvent("output"),
@@ -2252,7 +2254,9 @@ func (s *Session) onThreadsRequest(request *dap.ThreadsRequest) {
 				},
 			})
 		}
-		threads = []dap.Thread{{Id: 1, Name: "Dummy"}}
+		if threads == nil {
+			threads = []dap.Thread{{Id: 1, Name: "Dummy"}}
+		}
 	} else if len(gs) == 0 {
 		threads = []dap.Thread{{Id: 1, Name: "Dummy"}}
 	} else {
